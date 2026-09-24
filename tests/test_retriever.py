@@ -75,6 +75,20 @@ class TestVersionAwareRetriever(unittest.TestCase):
         combined_content = " ".join(r.content for r in results)
         self.assertIn("amount", combined_content)
 
+    def test_stripe_v2024_04_01_retrieval(self):
+        """Stripe v2024-04-01 queries should retrieve PaymentIntents and migration notice."""
+        results = self.retriever.retrieve(
+            product_id="stripe-api",
+            version="v2024-04-01",
+            question="How do I migrate from Charges to PaymentIntents?",
+            top_k=3,
+        )
+        self.assertGreater(len(results), 0)
+        self.assertEqual(results[0].product_id, "stripe-api")
+        self.assertEqual(results[0].version, "v2024-04-01")
+        self.assertIn("PaymentIntents", results[0].content)
+
+
     def test_no_cross_version_leakage(self):
         """
         Crucial Differentiator Test:
