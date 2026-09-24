@@ -4,9 +4,9 @@ function StateNavigator({ activeState = 'demo' }) {
     { label: 'Ask', href: '#ask' },
     { label: 'Loading' },
     { label: 'Answer', href: '#answer' },
-    { label: 'Source', href: '#answer' },
+    { label: 'Source', href: '#source' },
     { label: 'No Docs' },
-    { label: 'Error' },
+    { label: 'Error', href: '#error' },
   ]
 
   return (

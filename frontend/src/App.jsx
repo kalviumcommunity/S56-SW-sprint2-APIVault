@@ -8,6 +8,8 @@ import Sidebar from './components/Sidebar'
 import HistoryPage from './components/HistoryPage'
 import DocumentationPage from './components/DocumentationPage'
 import AnswerSourcePage from './components/AnswerSourcePage'
+import SourcePage from './components/SourcePage'
+import ErrorPage from './components/ErrorPage'
 import StateNavigator from './components/StateNavigator'
 import './App.css'
 
@@ -23,6 +25,14 @@ function App() {
 
     if (window.location.hash === '#answer') {
       return 'answer'
+    }
+
+    if (window.location.hash === '#source') {
+      return 'source'
+    }
+
+    if (window.location.hash === '#error') {
+      return 'error'
     }
 
     return 'ask'
@@ -99,6 +109,18 @@ function App() {
           version={version}
           question={question}
         />
+      ) : page === 'source' ? (
+        <SourcePage
+          product={product}
+          version={version}
+          question={question}
+        />
+      ) : page === 'error' ? (
+        <ErrorPage
+          product={product}
+          version={version}
+          question={question}
+        />
       ) : (
         <div className="page-layout">
           <main className="main-content">
@@ -166,7 +188,19 @@ function App() {
         </div>
       )}
 
-      <StateNavigator activeState={page === 'answer' ? 'Answer' : page === 'ask' ? 'Ask' : 'demo'} />
+      <StateNavigator
+        activeState={
+          page === 'answer'
+            ? 'Answer'
+            : page === 'source'
+              ? 'Source'
+              : page === 'error'
+                ? 'Error'
+                : page === 'ask'
+                ? 'Ask'
+                : 'demo'
+        }
+      />
     </div>
   )
 }
