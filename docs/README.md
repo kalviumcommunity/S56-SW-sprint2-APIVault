@@ -18,3 +18,7 @@ The processed dataset currently contains 33 chunks. Each chunk preserves its pro
 `Markdown docs -> products.json validation -> chunking -> processed_chunks.json -> version-aware retrieval`
 
 This keeps retrieval strictly scoped to the selected product and version.
+
+## Final Integration Verification
+
+The API is validated end-to-end for version isolation: the same FastAPI question is queried against `v0.100.0` and `v0.110.0`, and the returned answer and source metadata remain tied to the selected version. This protects the project's core requirement of version-specific answers with exact source attribution.

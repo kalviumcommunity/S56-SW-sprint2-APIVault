@@ -167,6 +167,35 @@ class TestAPIEndpoints(unittest.TestCase):
         res3 = self.client.post("/api/query", json={"product_id": "  ", "version": "v0.100.0", "question": "test"})
         self.assertEqual(res3.status_code, 422)
 
+    def test_same_question_returns_version_specific_results(self):
+        """The same question must retrieve documentation from the selected version only."""
+        question = "How does data validation work in FastAPI?"
+
+        responses = {}
+        for version in ("v0.100.0", "v0.110.0"):
+            response = self.client.post(
+                "/api/query",
+                json={
+                    "product_id": "fastapi",
+                    "version": version,
+                    "question": question,
+                    "top_k": 3,
+                },
+            )
+            self.assertEqual(response.status_code, 200)
+            responses[version] = response.json()
+
+        older = responses["v0.100.0"]
+        newer = responses["v0.110.0"]
+
+        self.assertNotEqual(older["answer"], newer["answer"])
+        self.assertIn("Pydantic v1", older["answer"])
+        self.assertIn("Pydantic v2", newer["answer"])
+        self.assertTrue(older["sources"])
+        self.assertTrue(newer["sources"])
+        self.assertTrue(all(source["version"] == "v0.100.0" for source in older["sources"]))
+        self.assertTrue(all(source["version"] == "v0.110.0" for source in newer["sources"]))
+
     def test_no_cross_version_leakage_via_api(self):
         """Querying FastAPI v0.100.0 via API must never return v0.110.0 chunks or answers."""
         payload = {
